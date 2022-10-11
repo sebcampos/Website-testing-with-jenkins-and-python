@@ -1,6 +1,7 @@
 import requests
 import chrome
 import Webpages
+import asyncio
 from Webpages import utils
 from Webpages.utils import EC, By
 
@@ -24,10 +25,21 @@ def teardown_module(module):
 
 
 def test_validate_website_certificate():
-    try:
-        requests.get(website_url, cert="/etc/ssl/certs/5c92149f66e29520.crt")
-    except requests.exceptions.SSLError:
-        chrome_logger.warning("[FAILED] Website is not certificate can not be verified")
+    async def ping_website():
+        proc = await asyncio.create_subprocess_shell(
+            "openssl s_client -connect thesensisociety.com:443",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE)
+
+        stdout, stderr = await proc.communicate()
+        stdout = stdout.decode()
+        if "Verify return code: 0 (ok)" in stdout:
+            chrome_logger.info("OpenSSL returned 0 (ok) for website certificate")
+            return True
+        else:
+            chrome_logger.warning("OpenSSL returned 1 (fail) for website certificate")
+            return False
+    assert asyncio.run(ping_website())
 
 
 def test_validate_website_returns_status_code_200():
