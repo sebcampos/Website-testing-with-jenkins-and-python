@@ -23,8 +23,15 @@ def teardown_module(module):
     driver.quit()
 
 
+def test_validate_website_certificate():
+    try:
+        requests.get(website_url)
+    except requests.exceptions.SSLError:
+        chrome_logger.warning("[FAILED] Website is not certificate can not be verified")
+
+
 def test_validate_website_returns_status_code_200():
-    r = requests.get(website_url)
+    r = requests.get(website_url, verify=False)
     if r.status_code == 200:
         chrome_logger.info("[PASSED] Website returns 200 code")
     else:
