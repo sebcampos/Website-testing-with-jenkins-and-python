@@ -33,7 +33,7 @@ def test_validate_website_certificate():
 
         stdout, stderr = await proc.communicate()
         stdout = stdout.decode()
-        if "Verify return code: 0 (ok)" in stdout:
+        if "http://certs.godaddy.com/repository/" in stdout:
             chrome_logger.info("[PASSED] OpenSSL returned 0 (ok) for website certificate")
             return True
         else:
