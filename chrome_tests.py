@@ -34,10 +34,10 @@ def test_validate_website_certificate():
         stdout, stderr = await proc.communicate()
         stdout = stdout.decode()
         if "Verify return code: 0 (ok)" in stdout:
-            chrome_logger.info("OpenSSL returned 0 (ok) for website certificate")
+            chrome_logger.info("[PASSED] OpenSSL returned 0 (ok) for website certificate")
             return True
         else:
-            chrome_logger.warning("OpenSSL returned 1 (fail) for website certificate")
+            chrome_logger.warning("[FAILED] OpenSSL returned 1 (fail) for website certificate")
             return False
     assert asyncio.run(ping_website())
 
