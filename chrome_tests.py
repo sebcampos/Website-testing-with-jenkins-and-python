@@ -1,16 +1,17 @@
-import time
+import requests
 import chrome
 import Webpages
 from Webpages import utils
 from Webpages.utils import EC, By
 
+HEADLESS = True
 
 def setup_module(module):
     """ setup any state specific to the execution of the given module."""
     global driver, actions, wait, website_url, chrome_logger
     chrome_logger = utils.set_up_logger("chrome_tests")
     website_url = "https://thesensisociety.com"
-    driver, actions, wait = chrome.init_webdriver()
+    driver, actions, wait = chrome.init_webdriver(HEADLESS)
 
 
 def teardown_module(module):
@@ -20,6 +21,14 @@ def teardown_module(module):
     driver.close()
     driver.quit()
 
+
+def test_validate_website_returns_status_code_200():
+    r = requests.get(website_url)
+    if r.status_code == 200:
+        chrome_logger.info("[PASSED] Website returns 200 code")
+    else:
+        chrome_logger.warning("[FAILED] Website is not returning 200 code")
+    assert r.status_code == 200
 
 def test_chrome_age_and_registration_verification_pop_up_appears():
     driver.get(website_url)
