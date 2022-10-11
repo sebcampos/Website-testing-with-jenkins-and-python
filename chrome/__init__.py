@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import NoSuchElementException
 
 
@@ -10,7 +12,7 @@ def init_webdriver(headless=None, production=False):
     if headless:
         options.headless = True
     if production:
-        driver = webdriver.Chrome(options=options, executable_path="/home/thesensisocietydelivery/google-chrome-stable_current_amd64.deb")
+        driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
     else:
         driver = webdriver.Chrome(options=options)
     driver.maximize_window()
