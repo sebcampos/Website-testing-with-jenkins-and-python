@@ -25,7 +25,7 @@ def teardown_module(module):
 
 def test_validate_website_certificate():
     try:
-        requests.get(website_url)
+        requests.get(website_url, cert="/etc/ssl/certs/5c92149f66e29520.crt")
     except requests.exceptions.SSLError:
         chrome_logger.warning("[FAILED] Website is not certificate can not be verified")
 
