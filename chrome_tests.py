@@ -5,13 +5,14 @@ from Webpages import utils
 from Webpages.utils import EC, By
 
 HEADLESS = True
+PRODUCTION = True
 
 def setup_module(module):
     """ setup any state specific to the execution of the given module."""
     global driver, actions, wait, website_url, chrome_logger
     chrome_logger = utils.set_up_logger("chrome_tests")
     website_url = "https://thesensisociety.com"
-    driver, actions, wait = chrome.init_webdriver(HEADLESS)
+    driver, actions, wait = chrome.init_webdriver(HEADLESS, PRODUCTION)
 
 
 def teardown_module(module):
