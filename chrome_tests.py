@@ -8,6 +8,7 @@ from Webpages.utils import EC, By
 HEADLESS = True
 PRODUCTION = True
 
+
 def setup_module(module):
     """ setup any state specific to the execution of the given module."""
     global driver, actions, wait, website_url, chrome_logger
@@ -39,6 +40,7 @@ def test_validate_website_certificate():
         else:
             chrome_logger.warning("[FAILED] OpenSSL returned 1 (fail) for website certificate")
             return False
+
     assert asyncio.run(ping_website())
 
 
@@ -50,9 +52,10 @@ def test_validate_website_returns_status_code_200():
         chrome_logger.warning("[FAILED] Website is not returning 200 code")
     assert r.status_code == 200
 
+
 def test_chrome_age_and_registration_verification_pop_up_appears():
-    driver.get(website_url)
     driver.delete_all_cookies()
+    driver.get(website_url)
     valid_age_btn = wait.until(
         EC.presence_of_element_located((By.XPATH, Webpages.Homepage.younger_than_21_button))
     )
@@ -81,8 +84,8 @@ def test_chrome_age_and_registration_verification_pop_up_appears():
 
 
 def test_validate_redirect_for_underage():
-    driver.get(website_url)
     driver.delete_all_cookies()
+    driver.get(website_url)
     invalid_age_btn = wait.until(
         EC.presence_of_element_located((By.XPATH, Webpages.Homepage.younger_than_21_button))
     )
@@ -101,5 +104,6 @@ def test_validate_redirect_for_underage():
 
 
 def test_navigate_to_check_out():
+    driver.delete_all_cookies()
     driver.get(website_url)
     assert utils.navigate_to_start_delivery(driver, actions, wait, chrome_logger)

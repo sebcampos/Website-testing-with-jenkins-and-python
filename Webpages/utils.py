@@ -28,8 +28,7 @@ def set_up_logger(name):
     return logger
 
 
-def select_valid_age_popup_option(driver, actions, wait):
-    driver.delete_all_cookies()
+def select_valid_age_popup_option(actions, wait):
     valid_age_btn = wait.until(
         EC.element_to_be_clickable((By.XPATH, Homepage.older_than_21_button))
     )
@@ -43,7 +42,7 @@ def select_valid_age_popup_option(driver, actions, wait):
 
 
 def navigate_to_start_delivery(driver, actions, wait, logger):
-    select_valid_age_popup_option(driver, actions, wait)
+    select_valid_age_popup_option(actions, wait)
     start_delivery_spn = wait.until(
         EC.element_to_be_clickable((By.XPATH, Homepage.start_delivery_spn))
     )
