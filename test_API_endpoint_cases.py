@@ -25,8 +25,8 @@ def teardown_module(module):
     client.close()
 
 
-def post_test():
-    r = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", data={"TEST_POST": 1}, headers=headers)
-    api_logger.info(f"{r.content}")
+def test_post():
+    req = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", data={"TEST_POST": 1}, headers=headers)
+    api_logger.info(f"{req.content}")
     assert r.status_code == 200
 
