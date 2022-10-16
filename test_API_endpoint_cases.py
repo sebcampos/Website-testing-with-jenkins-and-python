@@ -1,19 +1,9 @@
 import requests
 from Webpages import utils
 
-admin_url = 'https://thesensisociety.com/services/automation/admin/'
-admin_post_url = 'https://thesensisociety.com/services/automation/admin/login/?next=/admin/'
-
 UN = 'Sensi'
 PWD = '1a7428Sensi420'
 client = requests.session()
-
-# Retrieve the CSRF token first
-client.get(admin_url, verify=False)  # sets the cookie
-csrftoken = client.cookies['csrftoken']
-login_data = dict(username=UN, password=PWD, csrfmiddlewaretoken=csrftoken)
-r = client.post(admin_post_url, data=login_data, headers={"Referer": "foo"}, verify=False)
-headers = {"Referer": "foo", "X-csrftoken": csrftoken}
 
 
 def setup_module(module):
@@ -28,8 +18,29 @@ def teardown_module(module):
     client.close()
 
 
-def test_post():
-    req = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", data={"TEST_POST": 1},
-                      headers=headers)
-    api_logger.info(f"{req.content}")
+def authenticate_session():
+    login_url = f'https://thesensisociety.com/services/apiv1/authenticate?username={UN}&password={PWD}'
+    r = client.get(login_url, headers={"Referer": "foo"}, verify=False)
+    return r
+
+
+def test_retrieve_api_token():
+    r = authenticate_session()
     assert r.status_code == 200
+
+
+def test_post():
+    r = authenticate_session()
+    print(r.headers)
+    req = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/",
+                      json={"test": 1},
+                      headers={"Referer": "https://thesensisociety.com", "X-CSRFToken": r.cookies["csrftoken"]})
+    api_logger.info(f"{req.content}")
+    assert req.status_code == 200
+
+
+def test_qrcode_endpoint():
+    x = requests.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", json={"test": 1}, verify=False)
+    with open("x.html", "wb") as f:
+        f.write(x.content)
+    assert x.status_code == 200
