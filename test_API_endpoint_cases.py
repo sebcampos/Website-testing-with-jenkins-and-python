@@ -16,17 +16,20 @@ r = client.post(admin_post_url, data=login_data, headers={"Referer": "foo"}, ver
 headers = {"Referer": "foo", "X-csrftoken": csrftoken}
 
 
+def setup_module(module):
+    global api_logger
+    api_logger = utils.set_up_logger("api_logger")
+
+
 def teardown_module(module):
     """ teardown any state that was previously setup with a setup_module
     method.
     """
-    global api_logger
-    api_logger = utils.set_up_logger("api_logger")
     client.close()
 
 
 def test_post():
-    req = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", data={"TEST_POST": 1}, headers=headers)
+    req = client.post("https://thesensisociety.com/services/apiv1/qrcode_endpoint/", data={"TEST_POST": 1},
+                      headers=headers)
     api_logger.info(f"{req.content}")
     assert r.status_code == 200
-
